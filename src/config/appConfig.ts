@@ -1,3 +1,5 @@
+import type { AppConfig } from '@/types/app-config'
+
 /**
  * 运行时配置访问器。
  * window.__APP_CONFIG__ 由 vite 插件挂载 VITE_APP_CONFIG_* 默认值，

@@ -149,6 +149,29 @@ export function ErrorFallback() {
 { element: <RootLayout />, errorElement: <ErrorFallback />, children: [...] }
 ```
 
+### 页面标题
+
+页面组件调用 `usePageTitle('列表页')`（`src/router/pageTitle.ts`）同步 `document.title`——内部状态 → 外部系统（`useEffect`），符合 §5 hooks 约束，标题后缀自动带应用名：
+
+```tsx
+import { usePageTitle } from '@/router'
+
+export function UserListPage() {
+  usePageTitle('用户列表')   // document.title = "用户列表 | 应用名"
+  // ...
+}
+```
+
+### 404 兜底（catch-all）
+
+React Router 对未匹配路径默认渲染空路由（无 404 提示）。需要 404 页时自实现 `NotFound` 组件，并在 `routes.tsx` 加 catch-all 路由（**作为根路由兄弟，不放进 children**）：
+
+```tsx
+// src/router/routes.tsx
+{ element: <RootLayout />, children: [...] },   // 原有路由
+{ path: '*', element: <NotFound /> },            // catch-all：未匹配路径兜底
+```
+
 ## 3. 新增服务端接口（完整链路）
 
 新增一个接口涉及 4 层，按以下顺序：
@@ -255,6 +278,34 @@ onSuccess: (data) => setItems(data),
 ```tsx
 const { data, isPending, isError, error, refetch } = useUserList()
 // isPending → <Spinner />；isError → <ErrorState />；data → 渲染
+```
+
+### 文件下载 / 上传
+
+HTTP 层提供文件下载与上传的通用机制（`src/api/download.ts` / `src/api/upload.ts`），不经 React Query（命令式操作，非查询缓存）：
+
+**下载 `downloadFile(url, options)`**：Blob 请求 + `Content-Disposition` 文件名解析（兼容 `filename*=UTF-8''` 与 `filename=` 双格式），`<a>` 标签触发下载：
+
+```ts
+import { downloadFile } from '@/api'
+
+// Content-Disposition 提供文件名时自动采用；否则用 fileName 兜底
+await downloadFile('/files/export', { params: { type: 'xlsx' }, fileName: 'export.xlsx' })
+```
+
+**上传 `uploadFile<T>(url, file, options)`**：FormData + 进度回调 + 取消信号，响应按标准包络解包返回业务数据：
+
+```tsx
+import { uploadFile } from '@/api'
+
+const controller = new AbortController()
+const result = await uploadFile<{ url: string }>('/files/upload', file, {
+  fieldName: 'file',                     // FormData 字段名，默认 file
+  onProgress: (e) => {
+    if (e.total) setProgress(Math.round((e.loaded / e.total) * 100))  // 进度是 UI 状态，用 useState
+  },
+  signal: controller.signal,             // 可取消
+})
 ```
 
 ## 4. 新增 / 使用 store（Zustand）

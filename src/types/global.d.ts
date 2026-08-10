@@ -1,8 +1,10 @@
-/** 运行时可覆盖的应用配置（VITE_APP_CONFIG_* 默认值 + public/config.js 运维覆盖） */
-interface AppConfig {
-  [key: string]: unknown
+import type { AppConfig } from './app-config'
+
+declare global {
+  interface Window {
+    /** 运行时可覆盖的应用配置（AppConfig 类型见 ./app-config） */
+    __APP_CONFIG__?: AppConfig
+  }
 }
 
-interface Window {
-  __APP_CONFIG__?: AppConfig
-}
+export {}

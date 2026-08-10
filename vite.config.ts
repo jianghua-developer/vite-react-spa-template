@@ -2,7 +2,7 @@ import { fileURLToPath, URL } from 'node:url'
 import legacy from '@vitejs/plugin-legacy'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { appConfigPlugin } from './config/plugin/appConfigPlugin'
+import { appConfigPlugin } from './config/plugin/appConfigPlugin.ts'
 
 /**
  * 规范化部署子路径：确保以 `/` 开头、以 `/` 结尾。
@@ -26,6 +26,23 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        // 框架依赖拆成独立 vendor chunk：利用浏览器长缓存，升级框架时只失效 vendor
+        // （rolldown 版 manualChunks 为函数形式，按模块路径归组）
+        manualChunks(id: string) {
+          if (
+            id.includes('node_modules/react/') ||
+            id.includes('node_modules/react-dom/') ||
+            id.includes('node_modules/react-router/')
+          ) {
+            return 'vendor'
+          }
+        },
+      },
     },
   },
   css: {

@@ -27,6 +27,13 @@ const instance = axios.create({
   timeout: Number(getAppConfigValue('TIMEOUT') ?? DEFAULT_API_TIMEOUT),
 })
 
+/**
+ * 原始 axios 实例（复用同一拦截器与超时）。
+ * 常规请求推荐走 requestEndpoint / http；仅文件下载（需读取 response.headers，如 Content-Disposition）
+ * 或需要原始 response 控制的场景使用本实例。
+ */
+export const httpInstance = instance
+
 // ============ 请求拦截器：鉴权 / 凭证注入（模板，具体逻辑留空） ============
 instance.interceptors.request.use(
   (config) => {
@@ -113,6 +120,7 @@ async function request<T>(path: string, options: HttpOptions = {}): Promise<T> {
       data: options.body,
       signal: options.signal,
       authRequired: options.authRequired,
+      onUploadProgress: options.onUploadProgress,
     }
     const response = await instance.request<unknown>(axiosConfig)
     return unwrapEnvelope<T>(response.data, response.status)

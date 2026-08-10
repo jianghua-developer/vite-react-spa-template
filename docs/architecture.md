@@ -128,6 +128,7 @@ VITE_APP_CONFIG_API_BASE_URL ──▶ window.__APP_CONFIG__ ──▶ public/co
 ```text
 src/types/                            全局共享类型（跨模块复用）
   api/common.d.ts                    响应包络 ApiResponse / 分页 / 错误载荷
+  app-config.d.ts                    AppConfig 类型（VITE_APP_CONFIG_* 挂载形状）
   common/index.d.ts                  通用标识类型（ID / Nullable / PartialDeep）
   env.d.ts / global.d.ts             环境声明 / 全局 window.__APP_CONFIG__ 增强
   domain/ · enums/                   业务 DTO / 领域模型 / 枚举（.gitkeep 占位，业务按需建立）
@@ -181,6 +182,14 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 - 与拦截器同理，**只保留逻辑分支，不写具体鉴权逻辑**（token / 登录态 / 权限判断由业务补全）
 - 未接入鉴权时骨架放行（`return null`），不阻塞开发
 
+### 5.8 页面标题
+
+`src/router/pageTitle.ts` 提供 `usePageTitle(title?)`：`useEffect` 同步 `document.title`（内部 → 外部系统），标题后缀自动带应用名。页面组件调用即生效。
+
+### 5.9 404 兜底
+
+未匹配路径默认渲染空路由（无 404 提示）；消费方自实现 `NotFound` 后，在 `routes.tsx` 加 catch-all 路由（根路由兄弟）兜底，机制与示例见开发文档 §2。
+
 ## 6. 设计决策记录（ADR）
 
 ### ADR-1：为什么 ESNext + legacy 而非直接设置 build.target？
@@ -220,3 +229,20 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 - 路由守卫用 `requireAuth` 骨架（`loader` + `redirect`），鉴权判断由业务补全，不写死具体凭证逻辑
 - 视觉组件 / 页面 / 错误页一律**按项目风格自行实现**，参照开发文档的契约与示例
 - 错误分两层：预期内数据错误走 `isError` 自实现展示，渲染崩溃由 React Router `errorElement` 兜底，不新增第三种机制
+
+## 8. 快速定位指南
+
+| 想做什么 | 动哪里 |
+|---|---|
+| 加一个页面 / 路由 | `src/pages/` 建目录 + `src/router/routes.tsx` 注册 |
+| 加一个服务端接口 | `src/types/` 定义 DTO → `src/api/apiPath.ts` 登记 → api 层包装 → hooks 层 useQuery |
+| 加一个 store | `src/store/`（消费方自建，Zustand） |
+| 加一个运行时配置项 | `.env` 加 `VITE_APP_CONFIG_*` + 代码 `getAppConfigValue()` 读取 + `public/config.js` 覆盖 |
+| 加一个通用组件 | `src/components/`（消费方自建） |
+| 文件下载 / 上传 | `src/api/download.ts` / `upload.ts` |
+| 页面标题 | `usePageTitle(title)` |
+| 路由鉴权 | 受保护路由配 `loader: requireAuth` |
+| 改样式变量 / reset | `src/assets/styles/{variables,reset}.css` |
+| 改构建 / 工具链配置 | `vite.config.ts` / `config/` |
+| 改 HTTP 逻辑（拦截器 / 解包） | `src/api/http.ts` |
+| 改并发原语 | `src/utils/lockGate.ts` |
