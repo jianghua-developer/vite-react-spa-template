@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "incremental": true,
+    "tsBuildInfoFile": "../node_modules/.tmp/tsconfig.node.tsbuildinfo",
+    "lib": ["ESNext"],
+    "types": ["node"]
+  },
+  "include": [
+    "../vite.config.ts",
+    "../config/vitest.config.ts",
+    "../config/plugin/appConfigPlugin.ts"
+  ]
+}

@@ -1,0 +1,20 @@
+# 依赖与构建产物
+node_modules
+dist
+dist-ssr
+coverage
+
+# 环境变量（勿提交；配置骨架由底座模板复制 / 部署环境提供）
+.env
+.env.*
+
+# 工具链缓存
+*.tsbuildinfo
+*.local
+
+# 编辑器 / 系统
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log

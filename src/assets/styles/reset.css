@@ -1,0 +1,15 @@
+/*
+ * reset.css —— 浏览器行为初始化
+ *
+ * 用于初始化各浏览器默认样式差异（盒模型、margin/padding 归零、字体等）。
+ * 保持留空，具体重置规则由项目开发人员在此补充，例如：
+ *
+ *   *,
+ *   *::before,
+ *   *::after {
+ *     box-sizing: border-box;
+ *   }
+ *   body {
+ *     margin: 0;
+ *   }
+ */

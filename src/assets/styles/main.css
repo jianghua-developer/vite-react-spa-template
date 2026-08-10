@@ -1,0 +1,3 @@
+/* 全局样式入口：仅引入 reset 与 variables，业务/组件样式就近使用 CSS Modules */
+@import './reset.css';
+@import './variables.css';

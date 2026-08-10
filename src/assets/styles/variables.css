@@ -1,0 +1,12 @@
+/*
+ * variables.css —— 全局 CSS 变量
+ *
+ * 用于定义全局 design tokens（色板 / 间距 / 字号等），
+ * 组件与页面通过 var(--xxx, fallback) 引用。
+ * 保持留空，具体变量由项目开发人员在此补充，例如：
+ *
+ *   :root {
+ *     --color-primary: #2563eb;
+ *     --color-border: #e5e7eb;
+ *   }
+ */
