@@ -1,25 +1,10 @@
 import axios from 'axios'
 import type { AxiosError } from 'axios'
 import { apiBaseUrl, API_SUCCESS_CODE, DEFAULT_API_TIMEOUT, getAppConfigValue } from '@/config'
+import { ApiError } from './errors'
 import type { ApiResponse } from '@/types'
 import type { ApiEndpoint, EndpointRequest, EndpointResponse } from './types/apiPath'
 import type { AppRequestConfig, HttpOptions, QueryParams } from './types/http'
-
-/** HTTP 错误（HTTP 状态异常或业务码非成功时抛出） */
-export class ApiError extends Error {
-  status: number
-  /** 业务码（HTTP 错误时无） */
-  code?: string
-  data: unknown
-
-  constructor(status: number, message: string, data?: unknown, code?: string) {
-    super(message)
-    this.name = 'ApiError'
-    this.status = status
-    this.code = code
-    this.data = data
-  }
-}
 
 /** axios 实例：baseURL、超时（均可经 VITE_APP_CONFIG_* 运行时覆盖） */
 const instance = axios.create({

@@ -12,12 +12,18 @@ export interface ApiResponse<T = unknown> {
   msg: string
 }
 
-/** 分页数据 */
+/** 分页请求参数（snake_case，对齐服务端分页字段约定） */
+export interface PageParams {
+  page: number
+  page_size: number
+}
+
+/** 分页数据（snake_case） */
 export interface Paginated<T> {
   list: T[]
   total: number
   page: number
-  pageSize: number
+  page_size: number
 }
 
 /** 接口错误载荷 */

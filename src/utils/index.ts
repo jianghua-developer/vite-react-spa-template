@@ -1,5 +1,6 @@
 export { cx } from './cx'
 export type { ClassValue } from './types/cx'
 export * from './format'
+export { isEmail, isRequired } from './validation'
 export { createConcurrencyLimiter, createLockGate } from './lockGate'
 export type { ConcurrencyLimiter, LockGate, LockGateOptions } from './types/lockGate'

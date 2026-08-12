@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { ApiError, unwrapEnvelope } from '@/api/http'
+import { unwrapEnvelope } from '@/api/http'
+import { ApiError } from '@/api'
 import { API_SUCCESS_CODE } from '@/config'
 
 describe('unwrapEnvelope', () => {

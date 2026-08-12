@@ -38,7 +38,7 @@ pnpm preview      # 预览生产构建
 | 路径 | 职责 |
 |---|---|
 | `config/` | 工具链配置（tsconfig / eslint / vitest / postcss / vite 插件） |
-| `src/api/` | HTTP 层：axios 封装、`apiPath` 端点注册表（空，按业务登记）、DTO ↔ 领域映射 |
+| `src/api/` | HTTP 层：axios 封装、`apiPath` 端点注册表（空，按业务登记）、errors / DTO 映射 |
 | `src/hooks/` | React Query 数据 hooks（服务端数据唯一入口，业务自建） |
 | `src/pages/` / `src/components/` | UI 层（极简占位骨架 HomeView / NotFoundView + 通用组件自建） |
 | `src/layouts/` | 布局壳（极简 RootLayout 挂载点，业务扩展） |

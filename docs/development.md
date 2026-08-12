@@ -189,6 +189,8 @@ export interface UserListDto {
 }
 ```
 
+> 分页接口建议复用通用类型（`src/types/api/common.d.ts`）：请求参数 `PageParams`（page / page_size）、响应 `Paginated<T>`（list / total / page / page_size），字段为 snake_case，对齐服务端分页约定，避免手写分页字段。
+
 ### Step 2：注册端点
 
 ```ts

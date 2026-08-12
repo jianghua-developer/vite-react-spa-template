@@ -46,7 +46,7 @@
 │   ├── config.js                    # 运维运行时覆盖 window.__APP_CONFIG__
 │   └── favicon.svg
 ├── src/
-│   ├── api/                         # HTTP 层：axios 封装 + apiPath 注册表 + 类型契约
+│   ├── api/                         # HTTP 层：axios 封装 + apiPath 注册表 + errors + 类型契约
 │   ├── assets/                      # 静态资源
 │   │   └── styles/                  # 全局样式三件套：reset / variables / main
 │   ├── components/                  # .gitkeep · 通用组件（业务自建）
@@ -57,7 +57,7 @@
 │   ├── router/                      # 路由声明（routes.tsx，极简骨架 + 404 catch-all）
 │   ├── store/                       # .gitkeep · Zustand 纯客户端状态（业务自建）
 │   ├── types/                       # 全局共享类型：common / api / env / global
-│   └── utils/                       # 通用工具（cx / format / lockGate）
+│   └── utils/                       # 通用工具（cx / format / validation / lockGate）
 ├── tests/                           # 测试（镜像 src/ 结构）
 └── vite.config.ts                   # Vite 入口配置（base 规范化 / 插件 / 代理）
 ```
@@ -128,7 +128,7 @@ VITE_APP_CONFIG_API_BASE_URL ──▶ window.__APP_CONFIG__ ──▶ public/co
 
 ```text
 src/types/                            全局共享类型（跨模块复用）
-  api/common.d.ts                    响应包络 ApiResponse / 分页 / 错误载荷
+  api/common.d.ts                    响应包络 ApiResponse / 分页（PageParams / Paginated）/ 错误载荷
   app-config.d.ts                    AppConfig 类型（VITE_APP_CONFIG_* 挂载形状）
   common/index.d.ts                  通用标识类型（ID / Nullable / PartialDeep）
   env.d.ts / global.d.ts             环境声明 / 全局 window.__APP_CONFIG__ 增强
@@ -157,7 +157,7 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 
 - **端点注册表 `apiPath`**（`src/api/apiPath.ts`）：逻辑名 → 路径 / 方法 / 鉴权标记 / 出入参 DTO，集中登记。**不预设业务端点，注册表为空**，由开发人员按业务用 `endpoint` 助手登记（见开发文档 §3）
 - **统一调用 `requestEndpoint`**：按端点调用，方法 / 鉴权自动注入，出入参类型自动推导
-- **响应包络**：服务端约定 `{ code, data, msg }`；`unwrapEnvelope` 解包，非成功码抛 `ApiError`
+- **响应包络**：服务端约定 `{ code, data, msg }`；`unwrapEnvelope` 解包，非成功码抛 `ApiError`（`src/api/errors.ts`，独立于 HTTP 层，非 HTTP 场景也可复用）
 - **拦截器**：请求拦截器按 `authRequired` 注入凭证（逻辑预留，待接入）；响应拦截器统一处理超时 / 401 / 403 / 400（分支预留），**不吞错**
 - **取消**：AbortSignal 透传（React Query 卸载自动中止请求）
 
@@ -248,4 +248,5 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 | 改样式变量 / reset | `src/assets/styles/{variables,reset}.css` |
 | 改构建 / 工具链配置 | `vite.config.ts` / `config/` |
 | 改 HTTP 逻辑（拦截器 / 解包） | `src/api/http.ts` |
+| 表单校验 | `src/utils/validation.ts` |
 | 改并发原语 | `src/utils/lockGate.ts` |
