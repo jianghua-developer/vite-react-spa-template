@@ -28,6 +28,8 @@
 
 ## 2. 新增页面与路由
 
+> 骨架已提供（均无样式极简实现，在其上扩展或替换即可）：布局壳 `RootLayout`（`src/layouts/`）、首页占位 `HomeView`、404 页 `NotFoundView`（`src/pages/`）。
+
 ### 步骤
 
 1. 在 `src/pages/` 下按路由层级建目录（**目录结构 = 路由结构**）
@@ -36,7 +38,7 @@
 
 ### 视觉组件契约与示例
 
-本项目**不预设视觉成品组件**（见架构文档 ADR-5），以下给出常用状态组件的**接口契约**与**参考实现**，开发人员按项目风格 / 设计 token 实现即可（样式值建议走全局 CSS 变量，见 §8）：
+本项目**不预设品牌化视觉成品**（仅提供极简无样式骨架，见架构文档 ADR-5），以下给出常用状态组件的**接口契约**与**参考实现**，开发人员按项目风格 / 设计 token 实现即可（样式值建议走全局 CSS 变量，见 §8）：
 
 | 组件 | 接口契约 | 语义 |
 |---|---|---|
@@ -164,12 +166,13 @@ export function UserListPage() {
 
 ### 404 兜底（catch-all）
 
-React Router 对未匹配路径默认渲染空路由（无 404 提示）。需要 404 页时自实现 `NotFound` 组件，并在 `routes.tsx` 加 catch-all 路由（**作为根路由兄弟，不放进 children**）：
+`routes.tsx` 已配 catch-all 路由（`{ path: '*', element: <NotFoundView /> }`，**根路由兄弟，不放进 children**）：未匹配路径渲染极简 404 页（`src/pages/NotFoundView.tsx`）。按风格替换或品牌化即可：
 
 ```tsx
-// src/router/routes.tsx
-{ element: <RootLayout />, children: [...] },   // 原有路由
-{ path: '*', element: <NotFound /> },            // catch-all：未匹配路径兜底
+// src/pages/NotFoundView.tsx（替换为品牌化 404 页）
+export function NotFoundView() {
+  return <div>404 - 页面未找到</div>
+}
 ```
 
 ## 3. 新增服务端接口（完整链路）

@@ -16,7 +16,7 @@
 2. **业务文件零类型定义**：类型只存在于 `.d.ts`，业务文件只 import / 再导出
 3. **配置可运行时覆盖**：构建期默认值经 `window.__APP_CONFIG__` 暴露，运维可免打包覆盖
 4. **服务端数据不进客户端状态**：服务端数据只走 TanStack Query，Zustand 只放纯客户端状态
-5. **不预设视觉成品与演示业务**：视觉呈现（组件 / 页面 / 错误页）由开发人员按项目风格自行实现，架构只提供**机制 + 接口契约 + 文档示例**，不预设任何 UI 风格（见 ADR-5）
+5. **不预设品牌化视觉成品**：视觉呈现（组件 / 错误页等）由开发人员按项目风格自行实现，架构提供**机制 + 接口契约 + 文档示例**；仅保留极简无样式骨架（布局壳 / 首页 / 404）保证可运行（见 ADR-5）
 
 ## 2. 技术栈总览
 
@@ -52,9 +52,9 @@
 │   ├── components/                  # .gitkeep · 通用组件（业务自建）
 │   ├── config/                      # 应用配置读取：apiBaseUrl / 常量 / 运行时配置访问
 │   ├── hooks/                       # .gitkeep · React Query 数据 hooks（业务自建）
-│   ├── layouts/                     # .gitkeep · 布局壳组件（业务自建）
-│   ├── pages/                       # .gitkeep · 页面（业务自建，镜像路由树）
-│   ├── router/                      # 路由声明（routes.tsx，当前极简占位）
+│   ├── layouts/                     # 布局壳：RootLayout（极简 Outlet 挂载点）
+│   ├── pages/                       # 页面：HomeView / NotFoundView（极简占位，镜像路由树）
+│   ├── router/                      # 路由声明（routes.tsx，极简骨架 + 404 catch-all）
 │   ├── store/                       # .gitkeep · Zustand 纯客户端状态（业务自建）
 │   ├── types/                       # 全局共享类型：common / api / env / global
 │   └── utils/                       # 通用工具（cx / format / lockGate）
@@ -62,7 +62,7 @@
 └── vite.config.ts                   # Vite 入口配置（base 规范化 / 插件 / 代理）
 ```
 
-> 标注 `.gitkeep` 的目录为**业务自建**：项目只保留目录约定（空占位），页面 / 组件 / 布局 / 数据 hooks / store 均由开发人员按本文档与开发文档建立。
+> 标注 `.gitkeep` 的目录为**业务自建**：项目只保留目录约定（空占位），组件 / 数据 hooks / store 由开发人员按本文档与开发文档建立；布局与页面提供极简骨架（见 ADR-5）。
 
 ### 模块职责明细
 
@@ -70,7 +70,8 @@
 |---|---|---|
 | `src/api/` | axios 实例、拦截器、`apiPath` 端点注册表、DTO ↔ 领域映射 | 业务逻辑、组件 |
 | `src/hooks/` | useQuery / useMutation 包装（服务端数据唯一入口，业务自建） | 页面组件、HTTP 细节 |
-| `src/pages/` | 页面组件（路由叶子），一个目录一个页面（业务自建） | 通用组件、数据请求细节 |
+| `src/pages/` | 页面组件（路由叶子），内置极简占位（HomeView / NotFoundView），业务在其上扩展 | 通用组件、数据请求细节 |
+| `src/layouts/` | 布局壳（内置极简 RootLayout 挂载点，业务扩展） | 页面、业务逻辑 |
 | `src/components/` | 页面无关的通用组件（业务自建） | 具体业务页面 |
 | `src/store/` | 纯客户端全局状态（Zustand，业务自建） | 服务端数据 |
 | `src/types/` | 全局共享类型（DTO / 领域 / 枚举 / 响应包络） | 模块私有类型（应放模块内 `types/`） |
@@ -188,7 +189,7 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 
 ### 5.9 404 兜底
 
-未匹配路径默认渲染空路由（无 404 提示）；消费方自实现 `NotFound` 后，在 `routes.tsx` 加 catch-all 路由（根路由兄弟）兜底，机制与示例见开发文档 §2。
+`routes.tsx` 已配 catch-all 路由（`{ path: '*', element: <NotFoundView /> }`，根路由兄弟）：未匹配路径渲染极简 404 页（`src/pages/NotFoundView.tsx`），开发人员可按风格替换或品牌化。
 
 ## 6. 设计决策记录（ADR）
 
@@ -208,15 +209,17 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 
 无感刷新只是"拿锁 + 等锁 + 限流"的一个用例。本项目提供通用原语，具体业务（刷新、预热、单飞）由业务层自行组装，避免把 token 概念与基础代码耦合。
 
-### ADR-5：为什么不预设视觉成品与演示业务？
+### ADR-5：为什么不预设品牌化视觉成品（但保留极简骨架）？
 
 架构的价值在**机制 + 接口契约 + 文档示例**，而非替业务做视觉决策：
 
-- **视觉成品注定被替换**：每个项目都有自己的风格 / 品牌 / 目标用户，预置任何组件样式（加载、错误、页头）都会以高概率被替换，预置即维护负担
+- **品牌化视觉成品注定被替换**：每个项目都有自己的风格 / 品牌 / 目标用户，预置任何组件样式（加载、错误、页头）都会以高概率被替换，预置即维护负担
 - **演示业务注定被删除**：演示业务（页面 / 接口 / store）在正式业务中没有引用、必然被删除，预置即"延迟暴露的坑"
 - **避免名义锚定**：源码里只要存在默认实现，AI agent 与开发者就会默认沿用而非按项目风格生成，抑制风格沉淀
 
 因此架构只保留**机制**（HTTP 层、数据流、错误兜底接线、并发原语）与**文档示例**（视觉组件的接口形状 + 参考实现），UI 风格由开发人员自行建立，沉淀后按风格族蒸馏成组件库。
+
+**例外——极简无样式骨架**：布局壳（`RootLayout`）、首页占位（`HomeView`）、404 页（`NotFoundView`）提供**单行文本 / 结构 div 级**的无样式骨架（无导航、无品牌、无 CSS）。它们承载的是"可运行结构"而非视觉风格：复用成本几乎为零（最多改一行内容），并避免项目初始化后白屏 / 缺 404 兜底。
 
 ## 7. 给 AI Agent 的架构要点
 
@@ -236,9 +239,9 @@ src/assets/styles/                  全局样式：main.css（引 reset + variab
 |---|---|
 | 加一个页面 / 路由 | `src/pages/` 建目录 + `src/router/routes.tsx` 注册 |
 | 加一个服务端接口 | `src/types/` 定义 DTO → `src/api/apiPath.ts` 登记 → api 层包装 → hooks 层 useQuery |
-| 加一个 store | `src/store/`（消费方自建，Zustand） |
+| 加一个 store | `src/store/`（业务自建，Zustand） |
 | 加一个运行时配置项 | `.env` 加 `VITE_APP_CONFIG_*` + 代码 `getAppConfigValue()` 读取 + `public/config.js` 覆盖 |
-| 加一个通用组件 | `src/components/`（消费方自建） |
+| 加一个通用组件 | `src/components/`（业务自建） |
 | 文件下载 / 上传 | `src/api/download.ts` / `upload.ts` |
 | 页面标题 | `usePageTitle(title)` |
 | 路由鉴权 | 受保护路由配 `loader: requireAuth` |

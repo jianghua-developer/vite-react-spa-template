@@ -1,9 +1,15 @@
 import { createBrowserRouter } from 'react-router'
-import { APP_NAME } from '@/config'
+import { RootLayout } from '@/layouts'
+import { HomeView } from '@/pages/HomeView'
+import { NotFoundView } from '@/pages/NotFoundView'
 
-/** 极简骨架：仅一个无样式占位首页，保证 dev / build 链路可运行。
- *  不提供视觉成品与演示页面，开发人员按 docs/development.md §2 建立真实页面后替换本文件。
- *
- *  404 兜底：消费方自实现 NotFound 组件后添加 catch-all 路由（见 docs/development.md §2）：
- *    { path: '*', element: <NotFound /> }   // 注意放 children 之外、作为根路由兄弟 */
-export const router = createBrowserRouter([{ index: true, element: <p>{APP_NAME}</p> }])
+/** 极简路由骨架：布局壳 + 首页占位 + 404 兜底（均为无样式极简实现）。
+ *  消费方按 docs/development.md §2 建立真实页面后扩展本文件（替换 HomeView / 增加子路由）。
+ *  需鉴权的路由配 loader: requireAuth（见 src/router/guards.ts）。 */
+export const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [{ index: true, element: <HomeView /> }],
+  },
+  { path: '*', element: <NotFoundView /> },
+])

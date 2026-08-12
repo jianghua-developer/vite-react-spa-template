@@ -26,7 +26,7 @@ pnpm build        # 类型检查 + 生产构建（含 legacy 包）
 pnpm preview      # 预览生产构建
 ```
 
-> 本项目提供**机制 + 契约 + 文档示例**：页面 / 组件 / 视觉样式由业务自行建立（目录已留 `.gitkeep` 占位），复制后即可从开发文档起步。
+> 本项目提供**机制 + 契约 + 文档示例**：页面 / 组件 / 视觉样式由业务自行建立（目录已留 `.gitkeep` 占位），初始化后即可从开发文档起步。
 
 ## 文档导航
 
@@ -40,10 +40,11 @@ pnpm preview      # 预览生产构建
 | `config/` | 工具链配置（tsconfig / eslint / vitest / postcss / vite 插件） |
 | `src/api/` | HTTP 层：axios 封装、`apiPath` 端点注册表（空，按业务登记）、DTO ↔ 领域映射 |
 | `src/hooks/` | React Query 数据 hooks（服务端数据唯一入口，业务自建） |
-| `src/pages/` / `src/components/` | UI 层（页面 / 通用组件，业务自建） |
+| `src/pages/` / `src/components/` | UI 层（极简占位骨架 HomeView / NotFoundView + 通用组件自建） |
+| `src/layouts/` | 布局壳（极简 RootLayout 挂载点，业务扩展） |
 | `src/store/` | Zustand 纯客户端状态（业务自建） |
 | `src/types/` | 全局共享类型（DTO / 领域 / 枚举 / 响应包络） |
 | `src/assets/styles/` | 全局样式（reset / variables / main） |
-| `src/router/` | 路由声明（当前为极简占位骨架，业务页面替换） |
+| `src/router/` | 路由声明（极简骨架 + 404 catch-all，业务页面扩展） |
 | `tests/` | 测试（镜像 `src/` 结构） |
 | `public/` | 静态资源 + `config.js`（运行时配置免打包覆盖） |
