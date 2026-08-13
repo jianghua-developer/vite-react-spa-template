@@ -4,6 +4,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { RouterProvider } from 'react-router/dom'
 import { router } from '@/router'
+[% if auth_mode == 'opaque' %]
+import { authMutationCache, authQueryCache, initAuth } from '@/auth'
+[% endif %]
 import '@/assets/styles/main.css'
 
 const queryClient = new QueryClient({
@@ -13,7 +16,16 @@ const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
     },
   },
+[% if auth_mode == 'opaque' %]
+  queryCache: authQueryCache,
+  mutationCache: authMutationCache,
+[% endif %]
 })
+
+[% if auth_mode == 'opaque' %]
+// 挂认证拦截器（请求注入 x-access-token；401 无感刷新；40103 失效由外层跳登录）
+initAuth()
+[% endif %]
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

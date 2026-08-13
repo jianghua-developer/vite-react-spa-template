@@ -1,0 +1,20 @@
+[% if auth_mode == 'opaque' %]
+import { redirect } from 'react-router'
+import { getToken } from '@/utils'
+[% endif %]
+import type { LoaderFunction } from 'react-router'
+
+/**
+ * 路由守卫 loader：为需鉴权的路由提供守卫。未登录时 throw redirect 到登录页。
+ *
+ * 用法：受保护路由配 loader: requireAuth
+ *   { path: 'settings', loader: requireAuth, element: <SettingsPage /> }
+ */
+[% if auth_mode == 'opaque' %]
+export const requireAuth: LoaderFunction = () => {
+  if (!getToken()) throw redirect('/login')
+  return null
+}
+[% else %]
+export const requireAuth: LoaderFunction = () => null
+[% endif %]
