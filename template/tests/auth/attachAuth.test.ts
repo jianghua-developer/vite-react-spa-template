@@ -22,12 +22,12 @@ function captureHandlers(instance: AxiosInstance) {
     err: () => {},
   }
   vi.spyOn(instance.interceptors.request, 'use').mockImplementation((fulfilled) => {
-    hooks.req = fulfilled as ReqHandler
+    hooks.req = fulfilled as unknown as ReqHandler
     return 0 as never
   })
   vi.spyOn(instance.interceptors.response, 'use').mockImplementation((fulfilled, rejected) => {
-    hooks.ok = fulfilled as OkHandler
-    hooks.err = rejected as ErrHandler
+    hooks.ok = fulfilled as unknown as OkHandler
+    hooks.err = rejected as unknown as ErrHandler
     return 0 as never
   })
   return hooks
@@ -35,7 +35,7 @@ function captureHandlers(instance: AxiosInstance) {
 
 /** 构造认证错误（模拟后端 40102/40103 响应） */
 function makeAuthError(status: number, code: string, refreshToken?: string) {
-  const err = new Error('request failed') as Record<string, unknown>
+  const err = new Error('request failed') as unknown as Record<string, unknown>
   err.isAxiosError = true
   err.response = {
     status,

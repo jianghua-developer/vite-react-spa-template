@@ -51,8 +51,8 @@ _exclude:
 
 # ── 复制后按参数裁剪 + 安装依赖 ──
 _tasks:
-  # auth_mode=none 时移除认证模块与测试（main.tsx/guards 的 [% if %] 已同步裁剪引用）
-  - command: rm -rf src/auth tests/auth
+  # auth_mode=none 时移除认证模块、登录页骨架与测试（main.tsx/guards/routes 的 [% if %] 已同步裁剪引用）
+  - command: rm -rf src/auth tests/auth src/pages/LoginPage.tsx
     when: "[[ auth_mode == 'none' ]]"
   # 安装依赖：先检查消费方有无 pnpm，无则提示安装命令
   - command: >-
