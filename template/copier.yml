@@ -40,3 +40,12 @@ _exclude:
   - "copier.yml"
   - "node_modules"
   - "dist"
+
+# ── 复制后安装依赖：先检查消费方有无 pnpm，无则提示安装命令 ──
+_tasks:
+  - command: >-
+      if command -v pnpm >/dev/null 2>&1; then
+        pnpm install || echo "⚠️ 依赖安装失败，请手动运行: pnpm install";
+      else
+        echo "⚠️ 未检测到 pnpm 命令，请先安装 pnpm 再安装依赖: npm install -g pnpm && pnpm install";
+      fi
