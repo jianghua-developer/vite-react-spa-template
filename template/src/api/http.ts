@@ -19,22 +19,10 @@ const instance = axios.create({
  */
 export const httpInstance = instance
 
-// ============ 请求拦截器：鉴权 / 凭证注入（模板，具体逻辑留空） ============
-instance.interceptors.request.use(
-  (config) => {
-    // authRequired 端点在此注入鉴权凭证（如 token）；公开端点跳过
-    if ((config as AppRequestConfig).authRequired) {
-      // TODO: const token = getToken()  // 接入鉴权存储后启用
-      // config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  (error: AxiosError) => Promise.reject(error),
-)
-
-// ============ 响应拦截器：全局跨页面关注点（模板，具体逻辑留空） ============
-// 原则：拦截器只承载全局副作用（超时提示 / 无感刷新 / 权限跳转），绝不吞错，
+// ============ 响应拦截器：非认证的全局跨页面关注点（模板，具体逻辑留空） ============
+// 原则：拦截器只承载全局副作用（超时提示 / 权限跳转），绝不吞错，
 // 错误一律 Promise.reject 抛给 React Query，由页面组件经 useQuery/useMutation 的 error 状态自行展示。
+// 认证（x-access-token 注入 / 401 无感刷新）由 src/auth/attachAuth 挂载，不在此处。
 instance.interceptors.response.use(
   // 成功响应（HTTP 2xx）：可在此统一处理（如记录刷新时机），留空
   (response) => response,
@@ -51,10 +39,6 @@ instance.interceptors.response.use(
     if (isTimeout) {
       // 全局超时：提示 / 可选重试（跨页面通用）
       // TODO: 具体逻辑留空
-    } else if (status === 401) {
-      // 需要"拿锁 + 等锁队列"的场景（如无感刷新）可用 src/utils/lockGate 的 createLockGate 实现：
-      //   critical = 刷新动作、task = 带新 token 重试；具体业务由消费端决定
-      // TODO: 全局鉴权：无感刷新 token（透明）；刷新失败继续向下抛，页面据此跳登录
     } else if (status === 403) {
       // 全局权限：跳转无权限页或提示
       // TODO: 具体逻辑留空
