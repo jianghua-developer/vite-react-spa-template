@@ -22,7 +22,7 @@
     ".html", ".json", ".css", ".scss", ".less", ".md", ".yml", ".yaml", ".toml", ".svg", ".txt"
   ],
   "textFiles": [".env", ".env.development", ".env.production", ".npmrc", ".editorconfig", ".gitignore"],
-  "copyExcludes": ["node_modules", ".git", "dist", ".env.local", ".DS_Store"],
+  "copyExcludes": ["node_modules", ".git", "dist", ".env.local", ".DS_Store", "CLAUDE.md", ".gitignore"],
   "globExcludes": [".local", ".tsbuildinfo"],
   "renameFiles": { ".gitignore.template": ".gitignore" }
 }
