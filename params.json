@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "source_copier_yml_hash": "sha256:2559139a1bffbb2830ecb2aca454288c94f1f2735e7640f27f55b233f5efa7a5",
+  "generated_by": "copier-introspect@9.17.1",
+  "params": {
+    "project_name": {
+      "type": "str",
+      "default": "my-app",
+      "derived": false
+    },
+    "project_description": {
+      "type": "str",
+      "default": "",
+      "derived": false
+    },
+    "project_title": {
+      "type": "str",
+      "default": "",
+      "derived": false
+    },
+    "api_base_url": {
+      "type": "str",
+      "default": "/api",
+      "derived": false
+    },
+    "auth_mode": {
+      "type": "str",
+      "choices": [
+        {
+          "value": "none"
+        },
+        {
+          "value": "opaque"
+        }
+      ],
+      "default": "opaque",
+      "derived": false
+    }
+  }
+}
