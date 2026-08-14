@@ -51,8 +51,8 @@ export default defineConfig(({ mode }) => ({
   },
   server: {
     proxy: {
-      // 开发环境代理示例：接口与前端分离部署时启用
-      // '/api': { target: 'http://localhost:8080', changeOrigin: true },
+      // 开发环境代理示例：接口与前端分离部署时启用（目标端口以 CONTRACT.md §4.1 为准，后端默认 8000）
+      // '/api': { target: 'http://localhost:8000', changeOrigin: true },
     },
   },
 }))
