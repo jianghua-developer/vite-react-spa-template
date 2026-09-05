@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "source_copier_yml_hash": "sha256:2559139a1bffbb2830ecb2aca454288c94f1f2735e7640f27f55b233f5efa7a5",
   "generated_by": "copier-introspect@9.17.1",
   "params": {
@@ -36,5 +36,16 @@
       "default": "opaque",
       "derived": false
     }
+  },
+  "selection": {
+    "suited_for": [
+      "Vite + React + TypeScript 单页前端（SPA）——数据表驱动的中后台 / 管理界面前端",
+      "作为 fullstack-bridge 多端组合的前端单元；或纯前端单端底座直接生成",
+      "前端认证接入（auth_mode none|opaque，与后端 opaque token 无感刷新会话对齐）"
+    ],
+    "tradeoffs": [
+      "相对 vite-vue：React 生态大、组件与工程方案多、招人易；上手曲线较 Vue 陡",
+      "相对单仓全栈 / SSR（Nuxt）底座：纯 SPA 客户端渲染，API 与静态托管需后端/代理提供"
+    ]
   }
 }
